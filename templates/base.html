@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head> <!-- Use tidy HTML indentation only in <head> block -->
+    {%- block head %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
+    {%- block styles %}
+    <!-- Bootstrap CSS -->
+    {{ bootstrap.load_css() }}
+    <!-- Font Awesome -->
+    {{ fontawesome_html() }}
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+    {% endblock -%}
+    <!-- Page title -->
+    <title>{% block title %}{% endblock %}</title>
+    {%- endblock %}
+  </head>
+  <body> <!-- No tidy HTML indentation in <body> block, since it contains much auto-generated content -->
+      <!-- Page content -->
+      {% block content %}{% endblock %}
+      <!-- Scripts -->
+      {% block scripts %}
+          <!-- Bootstrap JS -->
+          {{ bootstrap.load_js() }}
+          <!-- Flask-Moment JS -->
+          {{ moment.include_moment() }}
+      {% endblock %}
+  </body>
+</html>
