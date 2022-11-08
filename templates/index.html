@@ -9,7 +9,11 @@
 
 
     <h1>Welcome!</h1>
-
+    {{ render_form(form) }}
+    <br>
+    <div class="col-md-4">
+        <p>New user? <a href="{{ url_for('index') }}">Click here to register</a>.</p>
+    </div>
 
 </div>
 {% endblock %}
