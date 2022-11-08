@@ -50,3 +50,9 @@ class RegistrationForm(FlaskForm):
 def index():
     form = LoginForm()
     return render_template("index.html", form=form)
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    form = RegistrationForm()
+    return render_template("index.html", form=form)
