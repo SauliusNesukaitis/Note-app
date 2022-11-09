@@ -7,13 +7,14 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <div class="navbar-nav mr-auto">
-            {{ render_nav_item('index', 'Home') }}
 
             {% if current_user.is_anonymous %}
+            {{ render_nav_item('index', 'Home') }}
             {{ render_nav_item('login', 'Login') }}
             {% endif %}
-            
+
             {% if current_user.is_authenticated %}
+            <div class="badge bg-secondary d-flex align-items-center fs-5">Hello, {{ current_user.username }}</div>
             {{ render_nav_item('logout', 'Log out') }}
             {% endif %}
 
