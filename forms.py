@@ -1,6 +1,13 @@
-from wtforms import SubmitField, StringField, BooleanField, PasswordField, ValidationError
 from wtforms.validators import DataRequired, Length, Regexp, EqualTo
 from flask_wtf import FlaskForm
+from wtforms import (
+    SubmitField,
+    StringField,
+    BooleanField,
+    PasswordField,
+    ValidationError,
+    SelectField
+    )
 
 class LoginForm(FlaskForm):
     username = StringField(
@@ -36,6 +43,7 @@ class RegistrationForm(FlaskForm):
 
 class Note(FlaskForm):
     title = StringField("Title", validators=[DataRequired(), Length(1, 16)])
-    note = StringField("Note", validators=[DataRequired(), Length(1, 64)])
-
-    submit = SubmitField("Log in")
+    note = StringField("Text", validators=[DataRequired(), Length(1, 64)])
+    label = SelectField('Label', choices=[('1', '1'), ('2', '2'), ('3', '3')])
+    submit = SubmitField("Add")
+    # https://wtforms.readthedocs.io/en/3.0.x/fields/#wtforms.fields.SelectField
