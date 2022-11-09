@@ -31,5 +31,10 @@
     <p>Please log in to continue.</p>
     {% endif %}
 
+    {% if current_user.is_authenticated %}
+    <h1>Add new note</h1>
+    {{ render_form(note) }}
+    {% endif %}
+
 </div>
 {% endblock %}

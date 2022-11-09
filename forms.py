@@ -33,3 +33,9 @@ class RegistrationForm(FlaskForm):
     )
     password2 = PasswordField("Confirm password", validators=[DataRequired()])
     submit = SubmitField("Register")
+
+class Note(FlaskForm):
+    title = StringField("Title", validators=[DataRequired(), Length(1, 16)])
+    note = StringField("Note", validators=[DataRequired(), Length(1, 64)])
+
+    submit = SubmitField("Log in")

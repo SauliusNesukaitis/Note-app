@@ -14,7 +14,7 @@ from flask_sqlalchemy import SQLAlchemy
 from wtforms import ValidationError
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap5
-from forms import LoginForm, RegistrationForm
+from forms import LoginForm, RegistrationForm, Note
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -62,7 +62,8 @@ class User(UserMixin, db.Model):
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    return render_template("index.html")
+    note = Note()
+    return render_template("index.html", note=note)
 
 
 @app.route("/login", methods=["GET", "POST"])
