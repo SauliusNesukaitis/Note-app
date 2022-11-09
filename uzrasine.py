@@ -21,6 +21,7 @@ bootstrap = Bootstrap5(app)
 migrate = Migrate(app, db)
 login_manager = LoginManager()
 login_manager.login_view = 'login'
+login_manager.init_app(app)
 
 
 class User(UserMixin, db.Model):
@@ -51,11 +52,6 @@ class User(UserMixin, db.Model):
         return '<User %r>' % self.username
 
 
-@login.user_loader
-def load_user(id):
-    return User.query.get(int(id))
-
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
@@ -75,6 +71,10 @@ def login():
                 next = url_for("index")
             return redirect(next)
     return render_template("login.html", form=form)
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 
 @app.route('/register', methods=['GET', 'POST'])
