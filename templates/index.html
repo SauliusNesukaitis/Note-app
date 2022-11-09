@@ -26,7 +26,10 @@
 {{ super() }}
 <div class="container">
 
+    {% if current_user.is_anonymous %}
     <h1>Welcome!</h1>
+    <p>Please log in to continue.</p>
+    {% endif %}
 
 </div>
 {% endblock %}
