@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% block title %}App home{% endblock %}
+
+{% block content %}
+{{ super() }}
+<div class="container">
+
+
+    <h1>Welcome!</h1>
+    {{ render_form(form) }}
+    <br>
+    <div class="col-md-4">
+        <p>New user? <a href="{{ url_for('register') }}">Click here to register</a>.</p>
+    </div>
+
+</div>
+{% endblock %}

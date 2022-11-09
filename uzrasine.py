@@ -1,8 +1,10 @@
 import os
 
 from flask import Flask, render_template, request, redirect, url_for
+from flask_login import current_user, login_required, login_user, logout_user
+from werkzeug.security import check_password_hash, generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
-from wtforms import SubmitField, StringField, PasswordField
+from wtforms import SubmitField, StringField, PasswordField, ValidationError
 from wtforms.validators import DataRequired, Length, Regexp, EqualTo
 from flask_wtf import FlaskForm
 from flask_migrate import Migrate
@@ -21,7 +23,7 @@ migrate = Migrate(app, db)
 
 
 class LoginForm(FlaskForm):
-    email = StringField(
+    username = StringField(
         "Username", validators=[DataRequired(), Length(1, 64)]
     )
     password = PasswordField("Password", validators=[DataRequired()])
@@ -51,12 +53,34 @@ class RegistrationForm(FlaskForm):
     password2 = PasswordField("Confirm password", validators=[DataRequired()])
     submit = SubmitField("Register")
 
+    def validate_username(self, field):
+        if User.query.filter_by(username=field.data).first():
+            raise ValidationError("Username already in use.")
+
 
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, index=True)
-    password = db.Column(db.String(128))
+    password_hash = db.Column(db.String(128))
+    # password = db.Column(db.String(128))
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    def validate_password(self, field):
+        if len(field.data) < self.passwd_min_len:
+            raise ValidationError(
+                f"Password minimum length should be at least {self.passwd_min_len} characters"
+            )
+
+    @property
+    def password(self):
+        raise AttributeError("password is not a readable attribute")
+
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
 
     def __repr__(self):
         return '<User %r>' % self.username
@@ -64,8 +88,21 @@ class User(db.Model):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    return render_template('index.html')
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
     form = LoginForm()
-    return render_template('index.html', form=form)
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data.lower()).first()
+        if user is not None and user.verify_password(form.password.data):
+            login_user(user, form.remember_me.data)
+            next = request.args.get("next")
+            if next is None or not next.startswith("/"):
+                next = url_for("main.index")
+            return redirect(next)
+    return render_template("login.html", form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -78,5 +115,5 @@ def register():
         )
         db.session.add(user)
         db.session.commit()
-        return redirect(url_for("index"))
+        return redirect(url_for("login"))
     return render_template("register.html", form=form)
