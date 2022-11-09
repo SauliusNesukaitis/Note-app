@@ -1,7 +1,14 @@
 import os
 
 from flask import Flask, render_template, request, redirect, url_for
-from flask_login import LoginManager, current_user, login_required, login_user, logout_user, UserMixin
+from flask_login import (
+    LoginManager,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+    UserMixin,
+)
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from wtforms import ValidationError
@@ -12,20 +19,21 @@ from forms import LoginForm, RegistrationForm
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
-    os.path.join(basedir, 'data.sqlite')
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
+    basedir, "data.sqlite"
+)
 app.config["SECRET_KEY"] = "1f54c168d2b78208b9d64c2a9664c03433fcef20"
 
 db = SQLAlchemy(app)
 bootstrap = Bootstrap5(app)
 migrate = Migrate(app, db)
 login_manager = LoginManager()
-login_manager.login_view = 'login'
+# login_manager.login_view = 'login'
 login_manager.init_app(app)
 
 
 class User(UserMixin, db.Model):
-    __tablename__ = 'users'
+    __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, index=True)
     password_hash = db.Column(db.String(128))
@@ -49,18 +57,18 @@ class User(UserMixin, db.Model):
         self.password_hash = generate_password_hash(password)
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return "<User %r>" % self.username
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route("/", methods=["GET", "POST"])
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for("index"))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data.lower()).first()
@@ -72,12 +80,13 @@ def login():
             return redirect(next)
     return render_template("login.html", form=form)
 
+
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route("/register", methods=["GET", "POST"])
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -89,3 +98,9 @@ def register():
         db.session.commit()
         return redirect(url_for("login"))
     return render_template("register.html", form=form)
+
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for("index"))

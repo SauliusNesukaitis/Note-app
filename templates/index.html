@@ -8,7 +8,15 @@
     <div class="container-fluid">
         <div class="navbar-nav mr-auto">
             {{ render_nav_item('index', 'Home') }}
+
+            {% if current_user.is_anonymous %}
             {{ render_nav_item('login', 'Login') }}
+            {% endif %}
+            
+            {% if current_user.is_authenticated %}
+            {{ render_nav_item('logout', 'Log out') }}
+            {% endif %}
+
         </div>
     </div>
 </nav>
