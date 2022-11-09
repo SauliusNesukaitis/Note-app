@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% block title %}App register{% endblock %}
+
+{% block content %}
+{{ super() }}
+<div class="container">
+
+    <h1>Welcome!</h1>
+    {{ render_form(form) }}
+
+</div>
+{% endblock %}
