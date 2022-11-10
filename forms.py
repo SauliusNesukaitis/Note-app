@@ -43,7 +43,7 @@ class RegistrationForm(FlaskForm):
 
 class NoteForm(FlaskForm):
     title = StringField("Title", validators=[DataRequired(), Length(1, 16)])
-    note = StringField("Text", validators=[DataRequired(), Length(1, 64)])
+    content = StringField("Text", validators=[DataRequired(), Length(1, 64)])
     label = SelectField("Label", choices=[("1", "1"), ("2", "2"), ("3", "3")])
     submit = SubmitField("Add")
     # https://wtforms.readthedocs.io/en/3.0.x/fields/#wtforms.fields.SelectField

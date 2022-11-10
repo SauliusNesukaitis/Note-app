@@ -130,4 +130,12 @@ def note():
 @login_required
 def add_note():
     form = NoteForm()
+    if form.validate_on_submit():
+        note = Note(
+            label=form.label.data,
+            content=form.content.data,
+        )
+        db.session.add(note)
+        db.session.commit()
+        return redirect(url_for("login"))
     return render_template("add_note.html", form=form)
