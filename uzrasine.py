@@ -63,6 +63,7 @@ class User(UserMixin, db.Model):
 class Note(db.Model):
     __tablename__ = "notes"
     id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(16))
     label = db.Column(db.Text, db.ForeignKey("label.label_name"))
     content = db.Column(db.String(64))
 
@@ -132,8 +133,9 @@ def add_note():
     form = NoteForm()
     if form.validate_on_submit():
         note = Note(
-            label=form.label.data,
+            title=form.title.data,
             content=form.content.data,
+            label=form.label.data
         )
         db.session.add(note)
         db.session.commit()
