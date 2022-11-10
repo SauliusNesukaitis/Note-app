@@ -37,7 +37,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, index=True)
     password_hash = db.Column(db.String(128))
-    # password = db.Column(db.String(128))
+    # notes = db.relationship("Note", backref="author", lazy="dynamic")
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
@@ -76,8 +76,7 @@ class Label(db.Model):
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    note = Note()
-    return render_template("index.html", note=note)
+    return render_template("index.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -124,7 +123,8 @@ def logout():
 @app.route("/note")
 @login_required
 def note():
-    return render_template("note.html")
+    notes = Note.query.all()
+    return render_template("note.html", notes=notes)
 
 
 @app.route("/add_note", methods=["GET", "POST"])
