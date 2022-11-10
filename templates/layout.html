@@ -15,6 +15,8 @@
 
             {% if current_user.is_authenticated %}
             <div class="badge bg-secondary d-flex align-items-center fs-5">Hello, {{ current_user.username }}</div>
+            {{ render_nav_item('note', 'Notes') }}
+            {{ render_nav_item('add_note', 'Add note') }}
             {{ render_nav_item('logout', 'Log out') }}
             {% endif %}
 

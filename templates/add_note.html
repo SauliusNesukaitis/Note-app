@@ -1,14 +1,14 @@
 {% extends "layout.html" %}
 {% from 'bootstrap5/form.html' import render_form %}
 
-{% block title %}App add_note{% endblock %}
-
+{% block title %}Add note{% endblock %}
 
 {% block content %}
 {{ super() }}
 <div class="container">
 
-    <h1>Notes:</h1>
+    <h1>Add note:</h1>
+    {{ render_form(form) }}
 
 </div>
 {% endblock %}

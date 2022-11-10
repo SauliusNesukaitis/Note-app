@@ -120,7 +120,14 @@ def logout():
     return redirect(url_for("index"))
 
 
-@app.route("/note", methods=["GET", "POST"])
+@app.route("/note")
 @login_required
 def note():
     return render_template("note.html")
+
+
+@app.route("/add_note", methods=["GET", "POST"])
+@login_required
+def add_note():
+    form = NoteForm()
+    return render_template("add_note.html", form=form)
