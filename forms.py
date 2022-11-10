@@ -41,7 +41,7 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField("Register")
 
 
-class Note(FlaskForm):
+class NoteForm(FlaskForm):
     title = StringField("Title", validators=[DataRequired(), Length(1, 16)])
     note = StringField("Text", validators=[DataRequired(), Length(1, 64)])
     label = SelectField("Label", choices=[("1", "1"), ("2", "2"), ("3", "3")])

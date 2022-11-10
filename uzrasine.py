@@ -14,7 +14,7 @@ from flask_sqlalchemy import SQLAlchemy
 from wtforms import ValidationError
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap5
-from forms import LoginForm, RegistrationForm, Note
+from forms import LoginForm, RegistrationForm, NoteForm
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -60,13 +60,17 @@ class User(UserMixin, db.Model):
         return "<User %r>" % self.username
 
 
-# class Post(db.Model):
-#     __tablename__ = "notes"
-#     id = db.Column(db.Integer, primary_key=True)
-#     author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-#     body = db.Column(db.Text)
-#     label = db.Column(db.Text)
-#     comments = db.relationship("Comment", backref="post", lazy="dynamic")
+class Note(db.Model):
+    __tablename__ = "notes"
+    id = db.Column(db.Integer, primary_key=True)
+    label = db.Column(db.Text, db.ForeignKey("label.label_name"))
+    content = db.Column(db.String(64))
+
+
+class Label(db.Model):
+    __tablename__ = "label"
+    id = db.Column(db.Integer, primary_key=True)
+    label_name = db.Column(db.String(16))
 
 
 @app.route("/", methods=["GET", "POST"])
