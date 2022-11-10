@@ -64,7 +64,7 @@ class Note(db.Model):
     __tablename__ = "notes"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(16))
-    label = db.Column(db.Text, db.ForeignKey("label.label_name"))
+    label = db.Column(db.Text, db.ForeignKey("label.id"))
     content = db.Column(db.String(64))
 
 
@@ -91,7 +91,7 @@ def login():
             login_user(user, form.remember_me.data)
             next = request.args.get("next")
             if next is None or not next.startswith("/"):
-                next = url_for("note")
+                next = url_for("login")
             return redirect(next)
     return render_template("login.html", form=form)
 
