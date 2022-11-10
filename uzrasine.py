@@ -37,7 +37,6 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, index=True)
     password_hash = db.Column(db.String(128))
-    # notes = db.relationship("Note", backref="author", lazy="dynamic")
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
@@ -64,14 +63,15 @@ class Note(db.Model):
     __tablename__ = "notes"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(16))
-    label = db.Column(db.Text, db.ForeignKey("label.id"))
+    label = db.Column(db.String(16), db.ForeignKey('label.name'))
     content = db.Column(db.String(64))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 
 class Label(db.Model):
     __tablename__ = "label"
     id = db.Column(db.Integer, primary_key=True)
-    label_name = db.Column(db.String(16))
+    name = db.Column(db.String(16), unique=True)
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -135,7 +135,8 @@ def add_note():
         note = Note(
             title=form.title.data,
             content=form.content.data,
-            label=form.label.data
+            label=form.label.data,
+            user_id=current_user.id
         )
         db.session.add(note)
         db.session.commit()
