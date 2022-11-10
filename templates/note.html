@@ -1,16 +1,14 @@
 {% extends "layout.html" %}
 {% from 'bootstrap5/form.html' import render_form %}
 
-{% block title %}App home{% endblock %}
+{% block title %}App add_note{% endblock %}
+
 
 {% block content %}
 {{ super() }}
 <div class="container">
 
-    {% if current_user.is_anonymous %}
-    <h1>Welcome!</h1>
-    <p>Please log in to continue.</p>
-    {% endif %}
+    <h1>Add note</h1>
 
 </div>
 {% endblock %}

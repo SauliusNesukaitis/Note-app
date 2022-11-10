@@ -60,6 +60,15 @@ class User(UserMixin, db.Model):
         return "<User %r>" % self.username
 
 
+# class Post(db.Model):
+#     __tablename__ = "notes"
+#     id = db.Column(db.Integer, primary_key=True)
+#     author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+#     body = db.Column(db.Text)
+#     label = db.Column(db.Text)
+#     comments = db.relationship("Comment", backref="post", lazy="dynamic")
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     note = Note()
@@ -69,7 +78,7 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("index"))
+        return redirect(url_for("note"))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data.lower()).first()
@@ -77,7 +86,7 @@ def login():
             login_user(user, form.remember_me.data)
             next = request.args.get("next")
             if next is None or not next.startswith("/"):
-                next = url_for("index")
+                next = url_for("note")
             return redirect(next)
     return render_template("login.html", form=form)
 
@@ -105,3 +114,9 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for("index"))
+
+
+@app.route("/note", methods=["GET", "POST"])
+@login_required
+def note():
+    return render_template("note.html")
