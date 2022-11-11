@@ -47,3 +47,8 @@ class NoteForm(FlaskForm):
     label = SelectField("Label", choices=[("1", "pirmas"), ("2", "antras"), ("3", "trecias")])
     submit = SubmitField("Add")
     # https://wtforms.readthedocs.io/en/3.0.x/fields/#wtforms.fields.SelectField
+
+
+class LabelForm(FlaskForm):
+    label = StringField("Label name", validators=[DataRequired(), Length(1, 16)])
+    submit = SubmitField("Add")

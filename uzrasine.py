@@ -14,7 +14,7 @@ from flask_sqlalchemy import SQLAlchemy
 from wtforms import ValidationError
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap5
-from forms import LoginForm, RegistrationForm, NoteForm
+from forms import LoginForm, RegistrationForm, NoteForm, LabelForm
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -141,4 +141,18 @@ def add_note():
         db.session.add(note)
         db.session.commit()
         return redirect(url_for("login"))
+    return render_template("add_note.html", form=form)
+
+
+@app.route("/add_label", methods=["GET", "POST"])
+@login_required
+def add_label():
+    form = LabelForm()
+    if form.validate_on_submit():
+        label = Label(
+            name=form.label.data,
+        )
+        db.session.add(label)
+        db.session.commit()
+        return redirect(url_for("note"))
     return render_template("add_note.html", form=form)
