@@ -6,9 +6,7 @@
 
 {% block content %}
 {{ super() }}
-<div class="container">
-
-    <h1>Notes:</h1>
+<div class="d-inline-flex">
 
     {% for note in notes %}
     <div class="card" style="width: 18rem;">
@@ -21,4 +19,5 @@
     {% endfor %}
 
 </div>
+
 {% endblock %}
