@@ -44,7 +44,7 @@ class RegistrationForm(FlaskForm):
 class NoteForm(FlaskForm):
     title = StringField("Title", validators=[DataRequired(), Length(1, 16)])
     content = StringField("Text", validators=[DataRequired(), Length(1, 64)])
-
+    label = SelectField('Group')
     submit = SubmitField("Add")
 
 

@@ -38,6 +38,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), unique=True, index=True)
     password_hash = db.Column(db.String(128))
     note = db.relationship('Note', backref='author', lazy='dynamic')
+    # label = db.relationship('Label', backref='label', lazy='dynamic')
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
@@ -64,17 +65,17 @@ class Note(db.Model):
     __tablename__ = "notes"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(16))
-    label = db.Column(db.String(16), db.ForeignKey('label.name'))
     content = db.Column(db.String(64))
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    label = db.relationship('Label', backref='author', lazy='dynamic')
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    label_name = db.Column(db.Integer, db.ForeignKey('labels.name'))
+    # labels = db.relationship('Label', backref='labels', lazy='dynamic')
 
 class Label(db.Model):
-    __tablename__ = "label"
+    __tablename__ = "labels"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(16), unique=True)
-    note_id = db.Column(db.Integer, db.ForeignKey('notes.id'))
-
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    label = db.relationship('Note', backref='labels', lazy='dynamic')
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -134,12 +135,14 @@ def note():
 @login_required
 def add_note():
     form = NoteForm()
+    form.label.choices = [(g.name) for g in Label.query.order_by('name')]
     if form.validate_on_submit():
         note = Note(
             title=form.title.data,
             content=form.content.data,
-            # label=form.label.data,
-            user_id=current_user.id
+            label_name=form.label.data,
+            # label_name = Label.query.filter(Label.name),
+            author_id=current_user.id
         )
         db.session.add(note)
         db.session.commit()
@@ -150,22 +153,32 @@ def add_note():
 @app.route("/add_label", methods=["GET", "POST"])
 @login_required
 def add_label():
+    labels = Label.query.all()
     form = LabelForm()
     if form.validate_on_submit():
         label = Label(
             name=form.label.data,
+            author_id=current_user.id
         )
         db.session.add(label)
         db.session.commit()
         return redirect(url_for("note"))
-    return render_template("add_note.html", form=form)
+    return render_template("add_label.html", form=form, labels = labels)
 
 
 @app.route('/delete/<int:id>', methods=['GET'])
 @login_required
-def delete(id):
+def delete_note(id):
     note = Note.query.get_or_404(id)
     db.session.delete(note)
     db.session.commit()
     return redirect(url_for('note'))
 
+
+@app.route('/delete/label/<int:id>', methods=['GET'])
+@login_required
+def delete_label(id):
+    label = Label.query.get_or_404(id)
+    db.session.delete(label)
+    db.session.commit()
+    return redirect(url_for('add_label'))

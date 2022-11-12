@@ -13,8 +13,9 @@
         <div class="card-body">
             <h5 class="card-title">{{ note.title }}</h5>
             <p class="card-text">{{ note.content }}</p>
-            {% if label %}
-            <p class="card-text text-info">{{ note.label }}</p>
+            <!-- <p class="card-text text-info">{{ note.label_name }}</p> -->
+            {% if note.label_name %}
+            <p class="card-text text-info">{{ note.label_name }}</p>
             {% endif %}
             <a href="/delete/{{note.id}}" class="btn btn-danger btn-delete">
                 delete
