@@ -14,7 +14,7 @@ from flask_sqlalchemy import SQLAlchemy
 from wtforms import ValidationError
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap5
-from forms import LoginForm, RegistrationForm, NoteForm, LabelForm
+from forms import LoginForm, RegistrationForm, NoteForm, LabelForm, RemoveNoteForm
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -37,6 +37,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, index=True)
     password_hash = db.Column(db.String(128))
+    note = db.relationship('Note', backref='author', lazy='dynamic')
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
@@ -56,7 +57,7 @@ class User(UserMixin, db.Model):
         self.password_hash = generate_password_hash(password)
 
     def __repr__(self):
-        return "<User %r>" % self.username
+        return f'User {self.username}'
 
 
 class Note(db.Model):
@@ -66,12 +67,13 @@ class Note(db.Model):
     label = db.Column(db.String(16), db.ForeignKey('label.name'))
     content = db.Column(db.String(64))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-
+    label = db.relationship('Label', backref='author', lazy='dynamic')
 
 class Label(db.Model):
     __tablename__ = "label"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(16), unique=True)
+    note_id = db.Column(db.Integer, db.ForeignKey('notes.id'))
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -120,11 +122,12 @@ def logout():
     return redirect(url_for("index"))
 
 
-@app.route("/note")
+@app.route("/note", methods=["GET", "POST"])
 @login_required
 def note():
     notes = Note.query.all()
-    return render_template("note.html", notes=notes)
+    form = RemoveNoteForm()
+    return render_template("note.html", notes=notes, form = form)
 
 
 @app.route("/add_note", methods=["GET", "POST"])
@@ -135,12 +138,12 @@ def add_note():
         note = Note(
             title=form.title.data,
             content=form.content.data,
-            label=form.label.data,
+            # label=form.label.data,
             user_id=current_user.id
         )
         db.session.add(note)
         db.session.commit()
-        return redirect(url_for("login"))
+        return redirect(url_for("note"))
     return render_template("add_note.html", form=form)
 
 
@@ -156,3 +159,13 @@ def add_label():
         db.session.commit()
         return redirect(url_for("note"))
     return render_template("add_note.html", form=form)
+
+
+@app.route('/delete/<int:id>', methods=['GET'])
+@login_required
+def delete(id):
+    note = Note.query.get_or_404(id)
+    db.session.delete(note)
+    db.session.commit()
+    return redirect(url_for('note'))
+
