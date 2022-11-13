@@ -14,7 +14,13 @@ from flask_sqlalchemy import SQLAlchemy
 from wtforms import ValidationError
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap5
-from forms import LoginForm, RegistrationForm, NoteForm, LabelForm, RemoveNoteForm
+from forms import (
+    LoginForm,
+    RegistrationForm,
+    NoteForm,
+    LabelForm,
+    EditLabelForm,
+)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -28,7 +34,6 @@ db = SQLAlchemy(app)
 bootstrap = Bootstrap5(app)
 migrate = Migrate(app, db)
 login_manager = LoginManager()
-# login_manager.login_view = 'login'
 login_manager.init_app(app)
 
 
@@ -37,8 +42,10 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, index=True)
     password_hash = db.Column(db.String(128))
-    note = db.relationship('Note', backref='author', lazy='dynamic')
-    # label = db.relationship('Label', backref='label', lazy='dynamic')
+    notes = db.relationship('Note', backref='author', lazy='dynamic')
+    labels = db.relationship('Label', backref='author', lazy='dynamic')
+
+
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
@@ -67,15 +74,15 @@ class Note(db.Model):
     title = db.Column(db.String(16))
     content = db.Column(db.String(64))
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    label_name = db.Column(db.Integer, db.ForeignKey('labels.name'))
-    # labels = db.relationship('Label', backref='labels', lazy='dynamic')
+    label_id = db.Column(db.Integer, db.ForeignKey('labels.id'))
+
 
 class Label(db.Model):
     __tablename__ = "labels"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(16), unique=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    label = db.relationship('Note', backref='labels', lazy='dynamic')
+    notes = db.relationship('Note', backref='labels', lazy='dynamic')
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -127,8 +134,7 @@ def logout():
 @login_required
 def note():
     notes = Note.query.all()
-    form = RemoveNoteForm()
-    return render_template("note.html", notes=notes, form = form)
+    return render_template("note.html", notes=notes)
 
 
 @app.route("/add_note", methods=["GET", "POST"])
@@ -140,8 +146,7 @@ def add_note():
         note = Note(
             title=form.title.data,
             content=form.content.data,
-            label_name=form.label.data,
-            # label_name = Label.query.filter(Label.name),
+            label_id=form.label.data,
             author_id=current_user.id
         )
         db.session.add(note)
@@ -150,9 +155,9 @@ def add_note():
     return render_template("add_note.html", form=form)
 
 
-@app.route("/add_label", methods=["GET", "POST"])
+@app.route("/label", methods=["GET", "POST"])
 @login_required
-def add_label():
+def label():
     labels = Label.query.all()
     form = LabelForm()
     if form.validate_on_submit():
@@ -162,11 +167,11 @@ def add_label():
         )
         db.session.add(label)
         db.session.commit()
-        return redirect(url_for("note"))
-    return render_template("add_label.html", form=form, labels = labels)
+        return redirect(url_for("label"))
+    return render_template("label.html", form=form, labels = labels)
 
 
-@app.route('/delete/<int:id>', methods=['GET'])
+@app.route('/delete/note/<int:id>', methods=["GET", "POST"])
 @login_required
 def delete_note(id):
     note = Note.query.get_or_404(id)
@@ -175,10 +180,22 @@ def delete_note(id):
     return redirect(url_for('note'))
 
 
-@app.route('/delete/label/<int:id>', methods=['GET'])
+@app.route('/delete/label/<int:id>', methods=["GET", "POST"])
 @login_required
 def delete_label(id):
-    label = Label.query.get_or_404(id)
-    db.session.delete(label)
+    label_name = Label.query.get_or_404(id)
+    db.session.delete(label_name)
     db.session.commit()
-    return redirect(url_for('add_label'))
+    return redirect(url_for('label'))
+
+
+@app.route('/edit_label/<int:id>', methods=["GET", "POST"])
+@login_required
+def edit_label(id):
+    form = EditLabelForm()
+    if form.validate_on_submit():
+        label = Label.query.get_or_404(id)
+        label.name = form.label.data
+        db.session.commit()
+        return redirect(url_for('label'))
+    return render_template("edit_label.html", form=form)
