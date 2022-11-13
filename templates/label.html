@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% block title %}Add note{% endblock %}
+
+{% block content %}
+{{ super() }}
+<div class="d-inline-flex">
+
+    {{ render_form(form) }}
+    {% for label in labels %}
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">Label id: {{ label.id }}</h5>
+            <p class="card-text">Label name: {{ label.name }}</p>
+            <div class="container d-flex">
+                <a href="/delete/label/{{label.id}}" class="btn btn-danger btn-delete">
+                    delete
+                </a>
+                <a href="/edit_label/{{label.id}}" class="btn btn-warning btn-delete">
+                    edit
+                </a>
+            </div>
+          
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+{% endblock %}
