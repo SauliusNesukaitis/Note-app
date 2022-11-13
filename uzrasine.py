@@ -20,6 +20,7 @@ from forms import (
     NoteForm,
     LabelForm,
     EditLabelForm,
+    EditNoteForm,
 )
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -199,3 +200,16 @@ def edit_label(id):
         db.session.commit()
         return redirect(url_for('label'))
     return render_template("edit_label.html", form=form)
+
+
+@app.route('/edit_note/<int:id>', methods=["GET", "POST"])
+@login_required
+def edit_note(id):
+    form = EditNoteForm()
+    if form.validate_on_submit():
+        note = Note.query.get_or_404(id)
+        note.title = form.title.data
+        note.content = form.content.data
+        db.session.commit()
+        return redirect(url_for('note'))
+    return render_template("edit_note.html", form=form)

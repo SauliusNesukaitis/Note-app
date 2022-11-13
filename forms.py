@@ -56,3 +56,9 @@ class LabelForm(FlaskForm):
 class EditLabelForm(FlaskForm):
     label = StringField("Label name", validators=[DataRequired(), Length(1, 16)])
     submit = SubmitField("Update label")
+
+
+class EditNoteForm(FlaskForm):
+    title = StringField("Title", validators=[DataRequired(), Length(1, 16)])
+    content = StringField("Content", validators=[DataRequired(), Length(1, 64)])
+    submit = SubmitField("Update note")
