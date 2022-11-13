@@ -19,9 +19,14 @@
                 <p class="card-text text-info">Label: {{ note.label_id }}</p>
             </div>
             {% endif %}
-            <a href="/delete/note/{{note.id}}" class="btn btn-danger btn-delete">
-                delete note
-            </a>
+            <div class="container d-flex">
+                <a href="/delete/note/{{note.id}}" class="btn btn-danger btn-delete">
+                    delete
+                </a>
+                <a href="/edit_note/{{note.id}}" class="btn btn-warning btn-delete">
+                    edit
+                </a>
+            </div>
         </div>
     </div>
     {% endfor %}
