@@ -5,12 +5,14 @@
 
 {% block content %}
 {{ super() }}
-<div class="container">
+<div class="container d-inline-flex">
 
     {% if current_user.is_anonymous %}
     <h1>Welcome!</h1>
     <p>Please log in to continue.</p>
     {% endif %}
+
+    <p>First create label then add note.</p>
 
 </div>
 {% endblock %}

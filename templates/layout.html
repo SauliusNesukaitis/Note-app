@@ -21,12 +21,20 @@
 
 
             <div class="container d-flex">
-                <input type="text" class="form-control" placeholder="Notes" aria-label="Notes" aria-describedby="basic-addon2">
+                <input type="text" class="form-control" placeholder="Notes" aria-label="Notes"
+                    aria-describedby="basic-addon2">
                 <div class="input-group-append">
-                  <button class="btn btn-outline-secondary" type="button">Search</button>
+                    <button class="btn btn-outline-secondary" type="button">Search</button>
                 </div>
             </div>
 
+            <div class="container d-flex">
+                <select class="form-select" aria-label="Default select example">
+                    <option selected>Filter by label</option>
+                    <option value="1">One</option>
+                </select>
+                <button class="btn btn-outline-secondary" type="button">Filter</button>
+            </div>
             {% endif %}
         </div>
     </div>
@@ -35,7 +43,7 @@
 
 {% block main_content %}
 {% if current_user.is_authenticated %}
-<container class="d-inline-flex w-25">
+<container class="d-inline-flex w-25" style="height: 44rem;">
     <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-gradient" style="width: 280px;">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
             <svg class="bi me-2" width="40" height="32">
