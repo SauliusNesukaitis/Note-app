@@ -14,10 +14,20 @@
             {% endif %}
 
             {% if current_user.is_authenticated %}
-            <div class="badge bg-secondary d-flex align-items-center fs-5">Hello, {{ current_user.username }}</div>
-            {{ render_nav_item('logout', 'Log out') }}
-            {% endif %}
+            <div class="container d-flex">
+                <div class="badge bg-secondary d-flex align-items-center fs-5">Hello, {{ current_user.username }}</div>
+                {{ render_nav_item('logout', 'Log out') }}
+            </div>
 
+
+            <div class="container d-flex">
+                <input type="text" class="form-control" placeholder="Notes" aria-label="Notes" aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="button">Search</button>
+                </div>
+            </div>
+
+            {% endif %}
         </div>
     </div>
 </nav>
