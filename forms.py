@@ -43,8 +43,8 @@ class RegistrationForm(FlaskForm):
 
 class NoteForm(FlaskForm):
     title = StringField("Title", validators=[DataRequired(), Length(1, 16)])
-    content = StringField("Text", validators=[DataRequired(), Length(1, 64)])
-    label = SelectField('Group')
+    content = StringField("Content", validators=[DataRequired(), Length(1, 64)])
+    label = SelectField('Label')
     submit = SubmitField("Add")
 
 
@@ -53,5 +53,6 @@ class LabelForm(FlaskForm):
     submit = SubmitField("Add")
 
 
-class RemoveNoteForm(FlaskForm):
-    submit = SubmitField("Remove")
+class EditLabelForm(FlaskForm):
+    label = StringField("Label name", validators=[DataRequired(), Length(1, 16)])
+    submit = SubmitField("Update label")
