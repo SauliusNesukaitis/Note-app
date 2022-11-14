@@ -37,6 +37,8 @@ migrate = Migrate(app, db)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = 'cyborg'
+
 
 class User(UserMixin, db.Model):
     __tablename__ = "users"
