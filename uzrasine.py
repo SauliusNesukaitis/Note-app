@@ -21,6 +21,8 @@ from forms import (
     LabelForm,
     EditLabelForm,
     EditNoteForm,
+    SearchForm,
+    FilterForm,
 )
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -135,6 +137,15 @@ def logout():
 @login_required
 def note():
     notes = Note.query.all()
+    # form = FilterForm()
+    # form.label.choices = [(g.name) for g in Label.query.order_by("name")]
+    # if form.validate_on_submit():
+    #     x = form.label.data
+    #     # x = request.form['title']
+    #     ans = Label.query.filter(Label.name.contains(x))
+    #     # ans = Note.query.filter_by(title=x)
+    #     # return redirect(url_for("note", ans=ans))
+    #     return render_template("note.html", form=form, ans=ans)
     return render_template("note.html", notes=notes)
 
 
@@ -210,3 +221,27 @@ def edit_note(id):
         db.session.commit()
         return redirect(url_for("note"))
     return render_template("edit_note.html", form=form)
+
+
+# @app.route('/filter', methods=['GET', 'POST'])
+# def filter():
+#     form = FilterForm()
+#     form.label.choices = [(g.name) for g in Label.query.order_by("name")]
+#     if form.validate_on_submit():
+#         x = form.label.data
+#         # x = request.form['title']
+#         notes = Note.query.filter(Note.label_id.contains(x))
+#         # ans = Note.query.filter_by(title=x)
+#         return redirect(url_for("search", notes=notes))
+#         # return render_template("search.html", form=form, ans=ans)
+#     return render_template("search.html", form=form, notes=notes)
+
+
+@app.route("/search", methods=["GET", "POST"])
+def search():
+    form = SearchForm()
+    title = request.args.get("title")
+    if title:
+        notes = Note.query.filter(Note.title.contains(title))
+        return render_template("search.html", form=form, notes=notes)
+    return render_template("search.html", form=form)
