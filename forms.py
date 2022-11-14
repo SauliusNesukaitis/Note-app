@@ -62,3 +62,12 @@ class EditNoteForm(FlaskForm):
     title = StringField("Title", validators=[DataRequired(), Length(1, 16)])
     content = StringField("Content", validators=[DataRequired(), Length(1, 64)])
     submit = SubmitField("Update note")
+
+
+class SearchForm(FlaskForm):
+    title = StringField('Title',  validators=[DataRequired(), Length(1, 16)])
+    submit = SubmitField('Search')
+
+class FilterForm(FlaskForm):
+    label = SelectField("Label")
+    submit = SubmitField('Search')
