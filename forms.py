@@ -26,7 +26,7 @@ class RegistrationForm(FlaskForm):
             Regexp(
                 "^[A-Za-z0-9][A-Za-z0-9_.]*$",
                 0,
-                "Usernames must have only letters, numbers, dots or underscores"
+                "Usernames must have only letters, numbers, dots or underscores",
             ),
         ],
     )
@@ -44,7 +44,7 @@ class RegistrationForm(FlaskForm):
 class NoteForm(FlaskForm):
     title = StringField("Title", validators=[DataRequired(), Length(1, 16)])
     content = StringField("Content", validators=[DataRequired(), Length(1, 64)])
-    label = SelectField('Label')
+    label = SelectField("Label")
     submit = SubmitField("Add")
 
 
