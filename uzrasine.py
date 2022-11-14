@@ -136,7 +136,6 @@ def logout():
 @app.route("/note", methods=["GET", "POST"])
 @login_required
 def note():
-    # notes = Note.query.all()
     notes = current_user.notes
     return render_template("note.html", notes=notes)
 
@@ -145,7 +144,7 @@ def note():
 @login_required
 def add_note():
     form = NoteForm()
-    form.label.choices = [(g.name) for g in Label.query.order_by("name")]
+    form.label.choices = [(g.name) for g in current_user.labels]
     if form.validate_on_submit():
         note = Note(
             title=form.title.data,
@@ -162,7 +161,6 @@ def add_note():
 @app.route("/label", methods=["GET", "POST"])
 @login_required
 def label():
-    # labels = Label.query.all()
     labels = current_user.labels
     form = LabelForm()
     if form.validate_on_submit():
@@ -216,25 +214,22 @@ def edit_note(id):
     return render_template("edit_note.html", form=form)
 
 
-# @app.route('/filter', methods=['GET', 'POST'])
-# def filter():
-#     form = FilterForm()
-#     form.label.choices = [(g.name) for g in Label.query.order_by("name")]
-#     if form.validate_on_submit():
-#         x = form.label.data
-#         # x = request.form['title']
-#         notes = Note.query.filter(Note.label_id.contains(x))
-#         # ans = Note.query.filter_by(title=x)
-#         return redirect(url_for("search", notes=notes))
-#         # return render_template("search.html", form=form, ans=ans)
-#     return render_template("search.html", form=form, notes=notes)
-
-
 @app.route("/search", methods=["GET", "POST"])
 def search():
     form = SearchForm()
     title = request.args.get("title")
     if title:
         notes = current_user.notes.filter(Note.title.contains(title))
+        return render_template("search.html", form=form, notes=notes)
+    return render_template("search.html", form=form)
+
+
+@app.route("/filter", methods=["GET", "POST"])
+def filter():
+    form = FilterForm()
+    form.label.choices = [(g.name) for g in current_user.labels]
+    label = request.args.get("label")
+    if label:
+        notes = current_user.notes.filter(Note.title.contains(label))
         return render_template("search.html", form=form, notes=notes)
     return render_template("search.html", form=form)
