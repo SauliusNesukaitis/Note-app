@@ -40,6 +40,3 @@ export FLASK_DEBUG=1
 ```Shell
 flask run
 ```
-##### Alternative without setting environment variables:
-```Shell
-flask --app webuzz --debug run
