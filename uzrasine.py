@@ -82,7 +82,7 @@ class Note(db.Model):
 class Label(db.Model):
     __tablename__ = "labels"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(16), unique=True)
+    name = db.Column(db.String(16))
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     notes = db.relationship("Note", backref="labels", lazy="dynamic")
 
@@ -136,16 +136,8 @@ def logout():
 @app.route("/note", methods=["GET", "POST"])
 @login_required
 def note():
-    notes = Note.query.all()
-    # form = FilterForm()
-    # form.label.choices = [(g.name) for g in Label.query.order_by("name")]
-    # if form.validate_on_submit():
-    #     x = form.label.data
-    #     # x = request.form['title']
-    #     ans = Label.query.filter(Label.name.contains(x))
-    #     # ans = Note.query.filter_by(title=x)
-    #     # return redirect(url_for("note", ans=ans))
-    #     return render_template("note.html", form=form, ans=ans)
+    # notes = Note.query.all()
+    notes = current_user.notes
     return render_template("note.html", notes=notes)
 
 
@@ -170,7 +162,8 @@ def add_note():
 @app.route("/label", methods=["GET", "POST"])
 @login_required
 def label():
-    labels = Label.query.all()
+    # labels = Label.query.all()
+    labels = current_user.labels
     form = LabelForm()
     if form.validate_on_submit():
         label = Label(name=form.label.data, author_id=current_user.id)
@@ -242,6 +235,6 @@ def search():
     form = SearchForm()
     title = request.args.get("title")
     if title:
-        notes = Note.query.filter(Note.title.contains(title))
+        notes = current_user.notes.filter(Note.title.contains(title))
         return render_template("search.html", form=form, notes=notes)
     return render_template("search.html", form=form)
