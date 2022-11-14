@@ -19,13 +19,6 @@
                 {{ render_nav_item('logout', 'Log out') }}
             </div>
 
-            <div class="container d-flex">
-                <select class="form-select" aria-label="Default select example">
-                    <option selected>Filter by label</option>
-                    <option value="1">One</option>
-                </select>
-                <button class="btn btn-outline-secondary" type="button">Filter</button>
-            </div>
             {% endif %}
         </div>
     </div>
@@ -66,6 +59,12 @@
                 <a href="search" class="nav-link text-white">
                     <svg class="bi me-2" width="16" height="16"></svg>
                     Search
+                </a>
+            </li>
+            <li>
+                <a href="filter" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16"></svg>
+                    Filter
                 </a>
             </li>
         </ul>
