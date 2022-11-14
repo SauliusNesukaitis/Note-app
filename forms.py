@@ -70,4 +70,4 @@ class SearchForm(FlaskForm):
 
 class FilterForm(FlaskForm):
     label = SelectField("Label")
-    submit = SubmitField('Search')
+    submit = SubmitField('Filter')
