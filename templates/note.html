@@ -3,7 +3,6 @@
 
 {% block title %}App add_note{% endblock %}
 
-
 {% block content %}
 {{ super() }}
 <div class="d-inline-flex">
@@ -13,12 +12,9 @@
         <div class="card-body">
             <h5 class="card-title">Title: {{ note.title }}</h5>
             <p class="card-text">Note content: {{ note.content }}</p>
-            
-            {% if note.label_id %}
             <div>
-                <p class="card-text text-info">Label: {{ note.label_id }}</p>
+                <p class="card-text text-info">Label: {{ note.label_name }}</p>
             </div>
-            {% endif %}
             <div class="container d-flex">
                 <a href="/delete/note/{{note.id}}" class="btn btn-danger btn-delete">
                     delete
