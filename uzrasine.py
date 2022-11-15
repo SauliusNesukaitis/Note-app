@@ -92,6 +92,20 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(
+            username=form.username.data,
+            password=form.password.data,
+        )
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for("login"))
+    return render_template("register.html", form=form)
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
@@ -113,20 +127,6 @@ def load_user(id):
     return User.query.get(int(id))
 
 
-@app.route("/register", methods=["GET", "POST"])
-def register():
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(
-            username=form.username.data,
-            password=form.password.data,
-        )
-        db.session.add(user)
-        db.session.commit()
-        return redirect(url_for("login"))
-    return render_template("register.html", form=form)
-
-
 @app.route("/logout")
 def logout():
     logout_user()
@@ -136,6 +136,9 @@ def logout():
 @app.route("/note", methods=["GET", "POST"])
 @login_required
 def note():
+    """
+        Displays current users notes
+    """
     notes = current_user.notes
     return render_template("note.html", notes=notes)
 
@@ -143,6 +146,9 @@ def note():
 @app.route("/add_note", methods=["GET", "POST"])
 @login_required
 def add_note():
+    """
+        Creates notes. Label must be created before note.
+    """
     form = NoteForm()
     form.label.choices = [(g.name) for g in current_user.labels]
     if form.validate_on_submit():
@@ -161,6 +167,9 @@ def add_note():
 @app.route("/label", methods=["GET", "POST"])
 @login_required
 def label():
+    """
+        Creates labels.
+    """
     labels = current_user.labels
     form = LabelForm()
     if form.validate_on_submit():
@@ -174,6 +183,9 @@ def label():
 @app.route("/delete/note/<int:id>", methods=["GET", "POST"])
 @login_required
 def delete_note(id):
+    """
+        Deletes note from database.
+    """
     note = Note.query.get_or_404(id)
     db.session.delete(note)
     db.session.commit()
@@ -183,6 +195,9 @@ def delete_note(id):
 @app.route("/delete/label/<int:id>", methods=["GET", "POST"])
 @login_required
 def delete_label(id):
+    """
+        Deletes label from database.
+    """
     label_name = Label.query.get_or_404(id)
     db.session.delete(label_name)
     db.session.commit()
@@ -192,6 +207,9 @@ def delete_label(id):
 @app.route("/edit_label/<int:id>", methods=["GET", "POST"])
 @login_required
 def edit_label(id):
+    """
+        Updates label name.
+    """
     form = EditLabelForm()
     if form.validate_on_submit():
         label = Label.query.get_or_404(id)
@@ -204,6 +222,9 @@ def edit_label(id):
 @app.route("/edit_note/<int:id>", methods=["GET", "POST"])
 @login_required
 def edit_note(id):
+    """
+        Updates note title, content.
+    """
     form = EditNoteForm()
     if form.validate_on_submit():
         note = Note.query.get_or_404(id)
@@ -216,6 +237,9 @@ def edit_note(id):
 
 @app.route("/search", methods=["GET", "POST"])
 def search():
+    """
+        Displays result of search in current users notes.
+    """
     form = SearchForm()
     title = request.args.get("title")
     if title:
@@ -226,6 +250,9 @@ def search():
 
 @app.route("/filter", methods=["GET", "POST"])
 def filter():
+    """
+        Displays current users notes filtered by label name.
+    """
     form = FilterForm()
     form.label.choices = [(g.name) for g in current_user.labels]
     label = request.args.get("label")
