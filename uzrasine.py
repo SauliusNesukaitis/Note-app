@@ -76,7 +76,7 @@ class Note(db.Model):
     title = db.Column(db.String(16))
     content = db.Column(db.String(64))
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    label_id = db.Column(db.Integer, db.ForeignKey("labels.id"))
+    label_name = db.Column(db.String, db.ForeignKey("labels.name"))
 
 
 class Label(db.Model):
@@ -155,7 +155,7 @@ def add_note():
         note = Note(
             title=form.title.data,
             content=form.content.data,
-            label_id=form.label.data,
+            label_name=form.label.data,
             author_id=current_user.id,
         )
         db.session.add(note)
@@ -249,7 +249,7 @@ def search():
 
 
 @app.route("/filter", methods=["GET", "POST"])
-def filter():
+def filter_notes():
     """
         Displays current users notes filtered by label name.
     """
@@ -257,6 +257,7 @@ def filter():
     form.label.choices = [(g.name) for g in current_user.labels]
     label = request.args.get("label")
     if label:
-        notes = current_user.notes.filter(Note.title.contains(label))
-        return render_template("search.html", form=form, notes=notes)
-    return render_template("search.html", form=form)
+        # notes = current_user.notes.filter(Note.label_name.contains(label))
+        notes = current_user.notes.filter(Note.label_name == label)
+        return render_template("filter.html", form=form, notes=notes)
+    return render_template("filter.html", form=form)
