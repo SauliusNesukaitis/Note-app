@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% from 'bootstrap5/nav.html' import render_nav_item %}
+
+
+{% block content %}
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <div class="navbar-nav mr-auto">
+
+            {% if current_user.is_anonymous %}
+            {{ render_nav_item('index', 'Home') }}
+            {{ render_nav_item('login', 'Login') }}
+            {% endif %}
+
+            {% if current_user.is_authenticated %}
+            <div class="container d-flex">
+                <div class="badge bg-secondary d-flex align-items-center fs-5">Hello, {{ current_user.username }}</div>
+                {{ render_nav_item('logout', 'Log out') }}
+            </div>
+
+            {% endif %}
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block main_content %}
+{% if current_user.is_authenticated %}
+<container class="d-inline-flex w-20 me-3" style="height: 44rem; height: 90%;">
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-gradient" style="width: 280px;">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <svg class="bi me-2" width="40" height="32">
+                <use xlink:href="#bootstrap"></use>
+            </svg>
+            <span class="fs-4">Notes app</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a href="note" class="nav-link text-white" aria-current="page">
+                    <svg class="bi me-2" width="16" height="16"></svg>
+                    Notes
+                </a>
+            </li>
+            <li>
+                <a href="add_note" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16"></svg>
+                    Add note
+                </a>
+            </li>
+            <li>
+                <a href="label" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16"></svg>
+                    Labels
+                </a>
+            </li>
+            <li>
+                <a href="search" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16"></svg>
+                    Search
+                </a>
+            </li>
+            <li>
+                <a href="filter" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16"></svg>
+                    Filter
+                </a>
+            </li>
+        </ul>
+    </div>
+</container>
+{% endif %}
+{% endblock %}
+
+{% endblock %}

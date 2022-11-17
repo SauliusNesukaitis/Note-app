@@ -6,15 +6,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
-    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     {%- block styles %}
     <!-- Bootstrap CSS -->
     {{ bootstrap.load_css() }}
-    <!-- Font Awesome -->
-    {{ fontawesome_html() }}
     <!-- Custom CSS -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
     {% endblock -%}
     <!-- Page title -->
     <title>{% block title %}{% endblock %}</title>
@@ -27,8 +25,6 @@
       {% block scripts %}
           <!-- Bootstrap JS -->
           {{ bootstrap.load_js() }}
-          <!-- Flask-Moment JS -->
-          {{ moment.include_moment() }}
       {% endblock %}
   </body>
 </html>
