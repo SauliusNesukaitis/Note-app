@@ -1,4 +1,4 @@
-# Baigiamasis projektas
+# Note app
 
 ## Installation
 
